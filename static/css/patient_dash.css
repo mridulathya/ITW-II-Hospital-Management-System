@@ -1,0 +1,281 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', Arial, sans-serif; /* Combined fonts */
+}
+
+body {
+    display: flex;
+    justify-content: center; /* Center alignment */
+    align-items: center; /* Center alignment */
+    background-color: #f4f4f9; /* Changed to match the first stylesheet */
+    position: relative;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: auto; /* Allows container to expand based on content */
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #f7f9fc;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    height: 100vh;
+}
+
+.profile {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 4px solid #3498db;
+}
+
+.profile h2 {
+    font-size: 1.6em;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.profile p {
+    font-size: 0.9em;
+    color: #777;
+}
+
+/* Logout button */
+.logout-btn {
+    background-color: #6c30cc;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Navigation menu */
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    margin-bottom: 15px;
+}
+
+nav ul li a {
+    display: block;
+    text-decoration: none;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: black; /* Changed to black for consistency */
+    padding: 10px 15px;
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+nav ul li a:hover {
+    background-color: #3498db;
+    color: white;
+    transform: translateY(-3px);
+}
+
+.icon-small {
+    width: 30px;
+    height: 30px;
+    vertical-align: auto;
+    margin-left: 15px;
+}
+
+.main-content {
+    flex: 1; 
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.header {
+    background-color: #e6f7f7;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 1.8em;
+    color: #4a4a4a;
+    text-align: center;
+    margin-bottom: 20px;
+    overflow-wrap: break-word; /* Ensure long text breaks into new lines */
+}
+
+/* Form Container */
+.form-container {
+    background-color: #ffffff;
+    padding: 40px;
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+    box-sizing: border-box;
+    max-height: 90vh; /* Keeps form visible within viewport */
+    overflow-y: auto; /* Enable scrolling within the form */
+}
+
+/* Form Group Styling */
+.form-group {
+    margin-bottom: 20px;
+    width: 100%; /* Ensure each form group takes full width */
+}
+
+/* Label Styling */
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1em;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Input Styling */
+.form-group input,
+.form-group select {
+    width: 100%; /* Full width of the container */
+    padding: 12px;
+    border: 1px solid #dcdfe3;
+    border-radius: 6px;
+    outline: none;
+    transition: border 0.3s ease;
+    font-size: 0.95em;
+    background-color: #f9f9f9;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #3498db;
+}
+
+/* Submit Button Styling */
+.submit-btn {
+    width: 100%; /* Full width of the container */
+    padding: 12px;
+    background-color: #3498db;
+    color: #fff;
+    font-size: 1em;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-3px);
+}
+
+/* Status Section */
+.status-section  {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.status-card {
+    background-color: #fff;
+    padding: 20px;
+    text-align: center;
+    flex: 1;
+    margin: 0 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.status-card h3 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.status-card p {
+    font-size: 1rem;
+    color: gray;
+}
+
+/* Upcoming Booking Section */
+.upcoming-booking {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table thead {
+    background-color: #007bff;
+    color: white;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+/* Results Section */
+.results {
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.results h2 {
+    color: #333;
+}
+
+.results ul {
+    list-style: none;
+    padding: 0;
+}
+
+.results li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.results li:last-child {
+    border-bottom: none;
+}
+
+/* Grid Container */
+.grid-container {
+    display: grid;
+    gap: 20px;
+}
+
+/* Messages */
+.messages {
+    color: red;
+}

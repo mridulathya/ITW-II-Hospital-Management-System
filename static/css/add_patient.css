@@ -1,0 +1,416 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    background-color: white;
+    position: relative; 
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: auto; /* Allows container to expand based on content */
+}
+.sidebar {
+    width: 250px;
+    background-color: #f7f9fc;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    position: relative;
+    height: 100vh;
+}
+
+.profile {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 4px solid #3498db;
+}
+
+.profile h2 {
+    font-size: 1.6em;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.profile p {
+    font-size: 0.9em;
+    color: #777;
+}
+
+/* Logout button */
+.logout-btn {
+    background-color: #6c30cc;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+._1_0_button {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+.confirm-btn{
+    background-color: #0566ab;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+.cancel-btn{
+    background-color: #bd140b;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+    margin: 10px;
+}
+
+.logout-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Navigation menu */
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    margin-bottom: 15px;
+}
+
+nav ul li a {
+    display: block;
+    text-decoration: none;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #3498db;
+    padding: 10px 15px;
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+    color: black;
+    font-size: 1rem;
+}
+nav ul ul a {
+    background-color: #c2a6ef;
+    display: block; 
+    padding: 10px;
+    width: 80%; 
+    text-align: center; 
+    /* align-items: center; */
+}
+
+nav ul li a:hover {
+    background-color: #3498db;
+    color: white;
+    transform: translateY(-3px);
+}
+.icon-small {
+    width: 30px;
+    height: 30px;
+    vertical-align:auto;  
+    margin-left: 15px; 
+}
+.main-content {
+    flex: 1; 
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.header {
+    background-color: #e6f7f7;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.form-container {
+    background-color: #ffffff;
+    padding: 40px;
+    width: 100%;
+    /* max-width: 600px; */
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+    box-sizing: border-box;
+    max-height: 90vh; /* Keeps form visible within viewport */
+    overflow-y: auto; /* Enable scrolling within the form */
+}
+/* Adjust form height on zoom */
+html, body {
+    height: 100%; /* Ensure body stretches the full height */
+    min-height: 100%; /* Set a minimum height to allow scrolling */
+}
+
+h1 {
+    font-size: 1.8em;
+    color: #4a4a4a;
+    text-align: center;
+    margin-bottom: 20px;
+    overflow-wrap: break-word; /* Ensure long text breaks into new lines */
+}
+
+/* Form Group Styling */
+.form-group {
+    margin-bottom: 20px;
+    width: 100%; /* Ensure each form group takes full width */
+}
+
+/* Label Styling */
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1em;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Input Styling */
+.form-group input,
+.form-group select {
+    width: 100%; /* Full width of the container */
+    padding: 12px;
+    border: 1px solid #dcdfe3;
+    border-radius: 6px;
+    outline: none;
+    transition: border 0.3s ease;
+    font-size: 0.95em;
+    background-color: #f9f9f9;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #3498db;
+}
+
+/* Submit Button Styling */
+.submit-btn {
+    width: 100%; /* Full width of the container */
+    padding: 12px;
+    background-color: #3498db;
+    color: #fff;
+    font-size: 1em;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit-btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-3px);
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.main-content {
+    padding: 20px;
+    flex: 1;
+}
+
+.header {
+    background-color: #e6f7f7;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 1.5rem;
+}
+
+h1 span {
+    font-weight: bold;
+}
+
+.search-bar {
+    margin-top: 20px;
+}
+
+.search-bar input {
+    padding: 10px;
+    width: 80%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.search-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.status-section  {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.status-card {
+    background-color: #fff;
+    padding: 20px;
+    text-align: center;
+    flex: 1;
+    margin: 0 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.status-card h3 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.status-card p {
+    font-size: 1rem;
+    color: gray;
+}
+
+.upcoming-booking {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table thead {
+    background-color: #007bff;
+    color: white;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.results {
+    margin-top: 20px;
+}
+
+.results h2 {
+    color: #333;
+}
+
+.results ul {
+    list-style: none;
+    padding: 0;
+}
+
+.results li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.results li:last-child {
+    border-bottom: none;
+}
+
+.results {
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.grid-container {
+    display: grid;
+    gap: 20px;
+}
+.messages {
+    color:red;
+}
+#scroll-container {
+    max-height: 400px; /* Adjust as needed */
+    overflow-y: auto;
+    position: relative; /* Required for the sticky header */
+}
+
+table {
+    width: 100%; /* Make sure the table uses full width */
+    border-collapse: collapse; /* Collapses borders for better appearance */
+}
+
+thead th {
+    position: sticky; /* Makes the header sticky */
+    top: 0; /* Positions the header at the top of the container */
+    background-color: rgb(124, 36, 36); /* Sets a background color for the header */
+    z-index: 10; /* Ensures the header stays above the table rows */
+    border-bottom: 2px solid #ccc; /* Optional: adds a bottom border for separation */
+}
+
+th {
+    padding: 10px; /* Adds padding to table headers */
+    text-align: left; /* Aligns text to the left */
+}
+.pagination-footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.pagination-link, .pagination-current {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.pagination-current {
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 4px;
+}
+
+.pagination-link:hover {
+    background-color: #0056b3;
+    color: #fff;
+    border-radius: 4px;
+}
