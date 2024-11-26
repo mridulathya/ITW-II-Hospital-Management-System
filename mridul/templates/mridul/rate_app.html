@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/add_patient.css' %}">
+    <link rel="stylesheet" href="{% static 'css/alldoctor.css' %}">
+    <style>
+        #scroll-container {
+            max-height: 90vh; /* Adjust as needed */
+            overflow-y: auto;
+            position: relative; /* Required for the sticky header */
+        }
+        /* General styling for the rating form */
+.rating-form {
+    background-color: #f9f9f9; /* Light background color */
+    border-radius: 8px; /* Rounded corners */
+    padding: 15px; /* Padding around the form */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation effects */
+}
+
+/* Scale up the form slightly on hover */
+.rating-form:hover {
+    transform: translateY(-5px); /* Slight lift */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+}
+
+/* Style for input elements */
+.rating-form input[type="number"],
+.rating-form textarea {
+    width: 100%; /* Full width for inputs */
+    padding: 10px; /* Padding inside inputs */
+    margin: 5px 0; /* Margin for spacing */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 4px; /* Rounded borders */
+    transition: border-color 0.3s ease; /* Transition for border color */
+}
+
+/* Change border color on focus */
+.rating-form input[type="number"]:focus,
+.rating-form textarea:focus {
+    border-color: #007bff; /* Change to a blue color on focus */
+    outline: none; /* Remove default outline */
+}
+
+/* Style for the submit button */
+.rating-form button {
+    background-color: #007bff; /* Button background color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 10px 15px; /* Padding inside button */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s ease; /* Transition for background color */
+}
+
+/* Change button background color on hover */
+.rating-form button:hover {
+    background-color: hsl(211, 100%, 35%); /* Darker blue on hover */
+}
+.message-container {
+    margin: 20px;
+}
+
+.message {
+    background-color: #d4edda; /* Light green background */
+    color: #155724; /* Dark green text */
+    border: 1px solid #c3e6cb; /* Border color */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding around message */
+    margin-bottom: 10px; /* Space between messages */
+}
+    </style>
+</head>
+<body>
+    {% if messages %}
+        <div class="message-container">
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <aside class="sidebar">
+        <div class="profile">
+            <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+            <p>{{ user.email_id }}</p>
+            <a href="{% url 'logout' %}"><button class="logout-btn">Log out</button></a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'patient_dashboard' user.user_sr_no %}">Back to Dashboard</a></li>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'alldoctor' user.user_sr_no %}">All Doctors</a></li>
+                <li><a href="{% url 'settings' user.user_sr_no %}">Settings</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="upcoming-booking">
+            {% if messages %}
+                    <div class="message-container">
+                        {% for message in messages %}
+                            <div class="message">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% if all_appointments %}
+                <div id="scroll-container">
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>Appointment ID</th>
+                                <th>Rate Appointment</th>
+                                <th>Doctor Name</th>
+                                <th>Patient Name</th> 
+                                <th>Appointment Date</th>
+                                <th>Appointment Time</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Prescription</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentTable">
+                            {% for appointment, prescriptions,rating in all_prescriptions %}
+                                <tr>
+                                    <td>{{ appointment.appointment_id }}</td>
+                                    <td style='max-width: 256px;'>
+                                        {% if rating %}
+                                            <!-- Display existing rating and comment -->
+                                            <div>
+                                                <strong>Rating:</strong> {{ rating.rating_value }} <br>
+                                                <strong>Comment:</strong> {{ rating.comment }}
+                                            </div>
+                                        {% else %}
+                                            <!-- Form to submit new rating and comment -->
+                                            <form action="{% url 'update_rating' appointment.appointment_id %}" method="post" class="rating-form">
+                                                {% csrf_token %}
+                                                <label for="rating">Rate (1-5):</label>
+                                                <input type="number" id="rating" name="rating_value" min="1" max="5" required>
+                                                
+                                                <label for="comment">Comment:</label>
+                                                <textarea id="comment" name="comment" rows="4" placeholder="Leave a comment..."></textarea>
+                                                
+                                                <button type="submit">Submit</button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
+                                      
+                                    <td>{{ appointment.doctor_id.first_name }} {{ appointment.doctor_id.last_name }}</td>
+                                    <td>{{ prescriptions.patient.first_name }} {{ prescriptions.patient.last_name }}</td>
+                                    <td>{{ appointment.appointment_date }}</td>
+                                    <td>{{ appointment.appointment_time }}</td>
+                                    <td>{{ appointment.reason }}</td>
+                                    <td>{{ appointment.status }}</td>
+                                    <td>
+                                        {% if prescriptions %}
+                                                <div style="display:flex; align-items: center;justify-content:space-around;">
+                                                    <p>{{ prescriptions.prescription_id}} </p>
+                                                    <a href="{% url 'pres_page' prescriptions.prescription_id %}"> View </a>
+                                        <a href="{% url 'pdf_prescription_create' prescriptions.prescription_id %}"><img src = "{% static 'images/download.png' %}" style="width:24px;"></a>
+                                                </div>
+                                        {% else %}
+                                            No prescriptions found
+                                        {% endif %}
+                                    </td>
+                                    
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No appointments found for this user.</p>
+            {% endif %}
+        </div>
+    </main>
+    
+</body>
+</html>

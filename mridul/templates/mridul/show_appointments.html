@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/add_patient.css' %}">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="profile">
+            <h2>{% if user.role_as_a == 'doctor' %}Dr.{% endif %}
+                {{user.first_name}} {{user.last_name}}</h2>
+            <p>{{user.email_id}}</p>
+            <a href="{% url 'logout' %}"><button class="logout-btn">Log out</button></a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                {% if user.role_as_a == 'doctor' %}
+                    <li><a href="{% url 'doctor_dashboard' user.user_sr_no %}">Back to Dashboard</a></li>
+                {% else %}
+                    <li><a href="{% url 'receptionist_dashboard' user.user_sr_no %}">Back to Dashboard</a></li>
+                {% endif %}
+                <li class="app_head">Appointments</li>
+                <ul class="sub_appointments">
+                    <li><a href="{% url 'show_appointments' user.user_sr_no 'Waiting to be Scheduled' %}" class="button">Pending</a></li>
+                    <li><a href="{% url 'show_appointments' user.user_sr_no 'Scheduled' %}" class="button" >Scheduled</a></li>
+                    <li><a href="{% url 'show_appointments' user.user_sr_no 'Cancelled' %}" class="button" >Cancelled</a></li>
+                    <li><a href="{% url 'show_appointments' user.user_sr_no 'Completed' %}" class="button" >Completed</a></li>
+                </ul>
+                {% if user.role_as_a == 'receptionist' %}
+                    <li><a href="{% url 'alldoctor' user.user_sr_no %}">All Doctors</a></li>
+                    <li><a href="{% url 'add_patient' user.user_sr_no %}">Add Patient</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </aside>
+    <main class="main-content">
+        <div class="upcoming-booking">
+            <h2>{{status}} - Appointments</h2>
+            {% if all_appointments %}
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Appointment ID</th>
+                            <th>Doctor Name</th>
+                            <th>Appointment Date</th>
+                            <th>Appointment Time</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Edit Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in all_appointments %}
+                            <tr>
+                                <td>{{ appointment.appointment_id }}
+                                    {% if appointment.status == 'Scheduled' %}
+                                    <a href="{% url 'patient_prescriptions' appointment.appointment_id user.user_sr_no %}"><img class='icon-small' src="{% static 'images/pencil.svg' %}" alt="Add Prescription"></a>
+                                    {% endif %}
+                                </td>
+                                <td>{{ appointment.doctor_id.first_name }} {{ appointment.doctor_id.last_name }}</td> 
+                                <td>{{ appointment.appointment_date }}</td>
+                                <td>{{ appointment.appointment_time }}</td>
+                                <td>{{ appointment.reason }}</td>
+                                <td>{{appointment.status}}</td>
+                                <td>
+                                    <form action="{% url 'update_appointment_status' user.user_sr_no appointment.appointment_id %}" method="POST">
+                                        {% csrf_token %}
+                                        {% if appointment.status == 'Cancelled' or appointment.status == 'Completed' %}
+                                            <span> NO EDIT OPTION </span>
+                                        {% elif appointment.status == 'Scheduled' %}
+                                            <button name="cancel" value="Cancelled" class="cancel-btn">Cancel</button>
+                                        {% else %}
+                                            <span class="_1_0_button">
+                                                <button type="submit" name="confirm" value="Confirmed" class="confirm-btn">Confirm</button>
+                                                <button type="submit" name="cancel" value="Cancelled" class="cancel-btn">Cancel</button>
+                                            </span>
+                                        {% endif %}
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No appointments found for this user.</p>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

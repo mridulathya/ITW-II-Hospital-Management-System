@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <!-- <link rel="stylesheet" href="{% static 'css/patient_dash.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/alldoctor.css' %}">
+    <link rel="stylesheet" href="{% static 'css/add_patient.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        .form-container{
+            width:70%;
+            display:flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+        .message-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background-color: #f0ad4e;
+            color: #fff;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .message {
+            margin: 0;
+        }
+
+        /* To prevent form content from hiding behind the fixed message container */
+        .main-content {
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    
+    <aside class="sidebar">
+        <div class="profile">
+            <h2>{% if user.role_as_a == 'doctor' %}Dr.{% endif %}
+                {{user.first_name}} {{user.last_name}}</h2>
+            <p>{{user.email_id}}</p>
+            <a href="{% url 'logout' %}"><button class="logout-btn">Log out</button></a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                {% if user.role_as_a == 'doctor' %}
+                    <li><a href="{% url 'doctor_dashboard' user.user_sr_no %}">Back to Dashboard</a></li>
+                {% elif user.role_as_a == 'receptionist' %}
+                    <li><a href="{% url 'receptionist_dashboard' user.user_sr_no %}">Back to Dashboard</a></li>
+                {% else %}
+                    <li><a href="{% url 'patient_dashboard' user.user_sr_no %}">Back to Dashboard</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </aside>
+    <main class="main-content">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="form-container">
+            
+            <div class="form-section">
+                <h2>Change Password</h2>
+                <form method="post" action="{% url 'settings' user.user_sr_no %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="change_password">
+                    <div class="form-group">
+                        <label for="old_password">Old Password:</label>
+                        <input type="password" id="old_password" name="old_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_password">New Password</label>
+                        <input type="password" id="new_nassword" name="new_password" value="" required>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="confirm_password">Confirm Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" value="" required>
+                    </div>
+                    <button type="submit">Change Password</button>
+                </form>
+            </div>
+
+            <div class="form-section">
+                <h2>Change Phone Number</h2>
+                <form method="post" action="{% url 'settings' user.user_sr_no %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="change_phone">
+                    <div class="form-group">
+                        <label for="old_phone">Old Phone Number:</label>
+                        <input type="tel" id="old_phone" name="old_phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_phone">New Phone Number:</label>
+                        <input type="tel" id="new_phone" name="new_phone" required>
+                    </div>
+                    <button type="submit">Change Phone Number</button>
+                </form>
+            </div>
+        </div>
+    </main>
+       
+        
+</body>
+</html>

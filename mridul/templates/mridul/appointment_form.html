@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/appointment_form.css' %}">
+    <title>Book an Appointment</title>
+    <style>
+        select option:disabled {
+    color: grey;  /* Change text color for disabled options */
+    background-color: #f0f0f0; /* Light gray background */
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Book an Appointment</h1>
+        <form action="{% url 'book_appointment' user_id doctor.doctor_id %}" method="POST">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="doctor">Select Doctor</label>
+                <select id="doctor" name="doctor" disabled>
+                    <option value="{{ doctor.doctor_id }}" selected>
+                        {{ doctor.specialization }} : {{ doctor.first_name }} {{ doctor.last_name }}
+                    </option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="appointment_fee">Appointment Fees</label>
+                <textarea id="appointment_fee" name="appointment_fee" rows="1" placeholder="$ {{ doctor.consultation_fee }}" readonly></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="appointment_date">Appointment Date</label>
+                <input type="date" id="appointment_date" name="appointment_date" value="{{ request.POST.appointment_date }}" required onchange="this.form.submit()">
+            </div>
+            <div class="form-group">
+                <label for="appointment_time">Available Appointment Times</label>
+                <select id="appointment_time" name="appointment_time" required>
+                    <option value="">-- Select a Time Slot --</option>
+                    {% for slot, is_available in dict.items %}
+                        {% if is_available == 'yes' %}
+                            <option value="{{ slot }}" {% if slot == request.POST.appointment_time %}selected{% endif %}>
+                                {{ slot|date:"H:i" }} 
+                            </option>
+                        {% else %}
+                            <option value="{{ slot }}" disabled>
+                                {{ slot|date:"H:i" }} (Unavailable)
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="reason">Reason for Appointment</label>
+                <textarea id="reason" name="reason" rows="4" placeholder="Please describe the reason for your appointment (optional)">{{ request.POST.reason }}</textarea>
+            </div>
+        
+            <button type="submit" class="btn">Book Appointment</button>
+        </form>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const datePicker = document.getElementById("appointment_date");
+
+            // Set min and max dates
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            const maxDate = new Date(today);
+            maxDate.setDate(today.getDate() + 30);
+
+            // Format dates as YYYY-MM-DD for input[type="date"]
+            const formatDate = (date) => {
+                let month = (date.getMonth() + 1).toString().padStart(2, '0');
+                let day = date.getDate().toString().padStart(2, '0');
+                return `${date.getFullYear()}-${month}-${day}`;
+            };
+
+            // Set the min and max attributes
+            datePicker.min = formatDate(tomorrow);
+            datePicker.max = formatDate(maxDate);
+        });
+    </script>
+</body>
+</html>

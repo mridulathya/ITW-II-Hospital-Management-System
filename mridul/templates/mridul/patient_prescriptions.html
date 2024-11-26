@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription</title>
+    <link rel="stylesheet" href="{% static 'css/patient_prescriptions.css' %}">
+    <style>
+        /* Styles for the input group */
+.input-group {
+    margin-bottom: 20px; /* Space between fields */
+}
+
+/* Styles for the label */
+.input-label {
+    display: block; /* Label on a new line */
+    font-size: 16px; /* Label font size */
+    margin-bottom: 5px; /* Space between label and input */
+    color: #333; /* Label text color */
+}
+
+/* Styles for the input field */
+.input-field {
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding inside the input */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    transition: border-color 0.3s; /* Smooth transition for border color */
+}
+
+/* Focus effect */
+.input-field:focus {
+    border-color: #5cb85c; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+}
+
+/* Error message styles */
+.error {
+    color: red; /* Error message color */
+    font-size: 12px; /* Error message font size */
+    margin-top: 5px; /* Space above error message */
+}
+
+    </style>
+</head>
+<body>
+    <div class="prescription-container">
+        <h1>Prescription Form</h1>
+        
+        <form action="{% url 'patient_prescriptions' appointment.appointment_id user.user_sr_no %}" method="POST">
+            {% csrf_token %}
+            
+            <!-- Patient Information Section -->
+            <h2>Patient Information</h2>
+            {% if messages %}
+                <ul class="error-messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if patient %}
+            <div>
+                <label for="patient_id">Patient ID:</label>
+                <input type="number" id="patient_id" name="patient_id" value="{{ patient.patient_id }}" readonly>
+
+                <label for="patient_name">Patient Name:</label>
+                <input type="text" id="patient_name" name="patient_name" value="{{ patient.first_name }} {{patient.last_name}}" readonly>
+
+
+                <label for="date_of_birth">Date of Birth:</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" value="{{ patient.date_of_birth|date:'Y-m-d' }}" readonly>
+
+                <label for="blood_group">Blood Group:</label>
+                <select id="blood_group" name="blood_group" disabled>
+                    <option value="A+" {% if patient.blood_group == "A+" %}selected{% endif %}>A+</option>
+                    <option value="A-" {% if patient.blood_group == "A-" %}selected{% endif %}>A-</option>
+                    <option value="B+" {% if patient.blood_group == "B+" %}selected{% endif %}>B+</option>
+                    <option value="B-" {% if patient.blood_group == "B-" %}selected{% endif %}>B-</option>
+                    <option value="AB+" {% if patient.blood_group == "AB+" %}selected{% endif %}>AB+</option>
+                    <option value="AB-" {% if patient.blood_group == "AB-" %}selected{% endif %}>AB-</option>
+                    <option value="O+" {% if patient.blood_group == "O+" %}selected{% endif %}>O+</option>
+                    <option value="O-" {% if patient.blood_group == "O-" %}selected{% endif %}>O-</option>
+                </select>
+
+
+                <!-- Appointment Information Section -->
+                <h2>Appointment Details</h2>
+                <label for="appointment_id">Appointment ID:</label>
+                <input type="number" id="appointment_id" name="appointment_id" value="{{appointment.appointment_id}}"  readonly>
+
+                <label for="appointment_date">Appointment Date:</label>
+                <input type="date" id="appointment_date" name="appointment_date" value="{{ appointment.appointment_date|date:'Y-m-d' }}" readonly>
+
+                <label for="appointment_time">Appointment Time:</label>
+                <input type="time" id="appointment_time" name="appointment_time"  value="{{appointment.appointment_time|time:'H:i'}}" readonly>
+
+                <label for="reason">Reason:</label>
+                <input type="text" id="reason" name="reason" value="{{appointment.reason}}" readonly>
+                {%if user.role_as_a == 'doctor' %}
+                <div>
+                    <h2>Prescription Information</h2>
+                    <label for="symptoms">Symptoms:</label>
+                    <textarea id="symptoms" name="symptoms" rows="3" required></textarea>
+
+                    <label for="cause">Cause:</label>
+                    <textarea id="cause" name="cause" rows="3"></textarea>
+                    
+                    <h2>Medicine Details</h2>
+                    <table class="medicine-table" id="medicineTable">
+                        <tr>
+                            <th>Medicine Name</th>
+                            <th>Dosage</th>
+                            <th>Remark</th>
+                            <th>Add</th>
+                        </tr>
+                        <tr class="medicine-row">
+                            <td><input type="text" name="medicine_name_1" placeholder="Enter medicine name" required></td>
+                            <td><input type="text" name="dosage_1" placeholder="Enter dosage" required></td>
+                            <td><textarea name="remark_1" placeholder="Enter any remark"></textarea></td>
+                            <td><button type="button" onclick="addMedicineRow()" class="add-row-btn">+</button></td>
+                        </tr>
+                    </table>
+                    
+                    <label for="lab_tests">Lab Tests:</label>
+                    <textarea id="lab_tests" name="lab_tests" rows="3"></textarea>
+
+                    <label for="hospitalization_needed">Hospitalization Needed:</label>
+                    <select id="hospitalization_needed" name="hospitalization_needed" onchange="toggleHospitalizationType()">
+                        <option value="NO">No</option>
+                        <option value="YES">Yes</option>
+                    </select>
+
+                    <div id="hospitalization_info" style="display: none;">
+                        <label for="type_of_hospitalization">Type of Hospitalization:</label>
+                        <select id="type_of_hospitalization" name="type_of_hospitalization">
+                            <option value="None" selected>None</option>
+                            <option value="ICU">ICU</option>
+                            <option value="General Ward">General Ward</option>
+                        </select>
+                    </div>
+                    
+                    
+                    <label for="surgery_needed">Surgery Needed:</label>
+                    <select id="surgery_needed" name="surgery_needed">
+                        <option value="NO">No</option>
+                        <option value="YES">Yes</option>
+                    </select>
+
+                    <div id="pre_surgery_info" style="display: none;">
+                        <label for="surgery_type">Surgery Type:</label>
+                        <input type="text" id="surgery_type" name="surgery_type">
+                        
+                        <label for="suggested_date">Suggested Date:</label>
+                        <input type="date" id="suggested_date" name="suggested_date">
+                        
+                        <label for="suggested_time">Suggested Time:</label>
+                        <input type="time" id="suggested_time" name="suggested_time">
+                        
+                        <label for="advice">Advice:</label>
+                        <textarea id="advice" name="advice" rows="4" cols="50" placeholder="Enter any advice here"></textarea>
+                    </div>
+
+                    <label for="dietary_precautions">Dietary Precautions:</label>
+                    <textarea id="dietary_precautions" name="dietary_precautions" rows="3"></textarea>
+
+                    <label for="remark_on_lab_test">Remark on Lab Tests:</label>
+                    <textarea id="remark_on_lab_test" name="remark_on_lab_test" rows="3"></textarea>
+                    
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="input-group">
+                <label for="phone_no" class="input-label">Patient Phone No. :</label>
+                <input type="tel" id="phone_no" name="phone_no" class="input-field" required pattern="^\d{10}$" maxlength="10" placeholder="Enter 10-digit phone number" title="Please enter a 10-digit phone number without any spaces or special characters.">
+            </div>          
+            {% endif %}
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <script>
+        function toggleHospitalizationType() {
+        const hospitalizationNeeded = document.getElementById('hospitalization_needed').value; // Fixed variable reference
+        const hospitalizationInfo = document.getElementById('hospitalization_info');
+        if (hospitalizationNeeded === "YES") {
+            hospitalizationInfo.style.display = "block"; 
+        } else {
+            hospitalizationInfo.style.display = "none"; 
+            }
+        }
+
+        document.getElementById('surgery_needed').addEventListener('change', function() {
+        var preSurgeryInfo = document.getElementById('pre_surgery_info');
+        if (this.value === 'YES') {
+            preSurgeryInfo.style.display = 'block'; 
+        } else {
+            preSurgeryInfo.style.display = 'none';
+        }});
+        let medicineCount = 1;
+
+    function addMedicineRow() {
+        medicineCount++;
+        const table = document.getElementById("medicineTable");
+        const newRow = document.createElement("tr");
+        newRow.classList.add("medicine-row");
+
+        newRow.innerHTML = `
+            <td><input type="text" name="medicine_name_${medicineCount}" placeholder="Enter medicine name" required></td>
+            <td><input type="text" name="dosage_${medicineCount}" placeholder="Enter dosage" required></td>
+            <td><textarea name="remark_${medicineCount}" placeholder="Enter any remark"></textarea></td>
+            <td><button type="button" onclick="addMedicineRow()" class="add-row-btn">+</button></td>
+        `;
+
+        table.appendChild(newRow);
+    }
+    </script>
+</body>
+</html>

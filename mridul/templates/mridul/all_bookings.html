@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/add_patient.css' %}">
+    <link rel="stylesheet" href="{% static 'css/alldoctor.css' %}">
+    <style>
+        #scroll-container {
+        max-height:90vh; /* Adjust as needed */
+        overflow-y: auto;
+        position: relative; /* Required for the sticky header */
+    }
+
+    </style>
+    
+</head>
+<body>
+        <aside class="sidebar">
+            <div class="profile">
+                <!-- <img src="user-placeholder.png" alt="Profile Image" class="profile-img"> -->
+                <h2>{{user.first_name}} {{user.last_name}}</h2>
+                <p>{{user.email_id}}</p>
+                <a href="{% url 'logout' %}"><button class="logout-btn">Log out</button></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href = "{% url 'patient_dashboard' user.user_sr_no %}">Back to Dashboard</a></li>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'alldoctor' user.user_sr_no %}">All Doctors</a></li>
+                    <li><a href="{% url 'settings' user.user_sr_no %}">Settings</a></li>
+                </ul>
+            </nav>
+            
+        </aside>
+
+
+        <main class="main-content">
+            
+            <div class="upcoming-booking">
+                {% if all_appointments %}
+                    <div id="scroll-container">
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th>Appointment ID</th>
+                                    <th>Doctor Name</th>
+                                    <th>Appointment Date</th>
+                                    <th>Appointment Time</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Remark</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointmentTable">
+                                {% for appointment in all_appointments %}
+                                    <tr>
+                                        <td>{{ appointment.appointment_id }}</td>
+                                        <td>{{ appointment.doctor_id.first_name }} {{ appointment.doctor_id.last_name }}</td>
+                                        <td>{{ appointment.appointment_date }}</td>
+                                        <td>{{ appointment.appointment_time }}</td>
+                                        <td>{{ appointment.reason }}</td>
+                                        <td>{{ appointment.status }}</td>
+                                        <td>{{ appointment.remark }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p>No appointments found for this user.</p>
+                {% endif %}
+            </div>
+        </main>
+</body>
+</html>

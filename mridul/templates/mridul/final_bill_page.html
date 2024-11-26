@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill Payments</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: #2e3b4e;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            flex: 1;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        table th {
+            background-color: #f7f7f7;
+            color: #333;
+            font-weight: bold;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .totals {
+            margin-top: 20px;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 16px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .totals p {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2e3b4e;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9em;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Varanasi District Govt. Hospital
+    </header>
+    
+    <main class="main-content">
+        <div>
+            <h1>Bill Details for Appointment ID: {{ prescription.appointment_id }}</h1>
+        </div>
+        <div>
+            <p>Patient Name : {{prescription.patient.first_name}} {{prescription.patient.last_name}}</p>
+            <p>Email Id : {{prescription.patient.email}}</p>
+            <p>Date of Bill Generation : {{now}}</p>
+        </div>
+        <div class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Payment ID</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Billing Date</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in all_payments %}
+                    <tr>
+                        <td>{{ payment.payment_id }}</td>
+                        <td>{{ payment.description }}</td>
+                        <td>${{ payment.amount }}</td>
+                        <td>{{ payment.billing_date }}</td>
+                        <td>{{ payment.payment_status }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No payment records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="totals" style="display: flex;align-items: center;justify-content: space-around;">
+            <p><strong>Total Paid Amount:</strong> ${{ total_paid }}</p>
+            <p><strong>Total Pending Amount:</strong> ${{ total_pending }}</p>
+            <p><strong>Total Refund Amount:</strong> ${{ total_refund }}</p>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2024 Varanasi District Govt. Hospital, 221005. All Rights Reserved.
+    </footer>
+</body>
+</html>

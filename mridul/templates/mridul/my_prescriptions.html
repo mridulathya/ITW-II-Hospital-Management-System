@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/add_patient.css' %}">
+    <link rel="stylesheet" href="{% static 'css/alldoctor.css' %}">
+    
+</head>
+<body>
+        <aside class="sidebar">
+            <div class="profile">
+                <h2>{{user.first_name}} {{user.last_name}}</h2>
+                <p>{{user.email_id}}</p>
+                <a href="{% url 'logout' %}"><button class="logout-btn">Log out</button></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href = "{% url 'patient_dashboard' user.user_sr_no %}">Back to Dashboard</a></li>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'alldoctor' user.user_sr_no %}">All Doctors</a></li>
+                    <li><a href="{% url 'settings' user.user_sr_no %}">Settings</a></li>
+                </ul>
+            </nav>
+            
+        </aside>
+
+
+        <main class="main-content">
+            
+            <div class="upcoming-booking">
+                <h2>All Past Prescriptions</h2>
+                <!-- <h1>Appointments for User</h1> -->
+                {% if all_prescriptions %}
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>Prescription Date</th>
+                                <th>Appointment ID</th>
+                                <th>Patient ID : Name</th>
+                                <th>Doctor ID : Name</th>
+                                <th>Prescription PDF/IMG</th>
+                                <th>Lab Test Reports</th>
+                                <th>Lab Test Bills</th>
+                                <th>Final Bill Reports</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for Prescription in all_prescriptions %}
+                                <tr>
+                                    <td>{{ Prescription.prescription_date }}</td>
+                                    <td>{{ Prescription.appointment_id }}</td>
+                                    <td>{{ Prescription.patient.first_name }} {{ Prescription.patient.last_name }} : {{ Prescription.patient_id}}</td>
+                                    <td>{{ Prescription.doctor.first_name }} {{ Prescription.doctor.last_name }} : {{ Prescription.doctor_id }}</td>
+                                    <td style="display:flex; align-items: center;justify-content:space-around;">
+                                        <a href="{% url 'pres_page' Prescription.prescription_id %}"> View </a>
+                                        <a href="{% url 'pdf_prescription_create' Prescription.prescription_id %}"><img src = "{% static 'images/download.png' %}" style="width:24px;"></a>
+                                    </td>
+                                    <td>None</td>
+                                    <td>None</td>
+                                    <td style="display:flex; align-items: center;justify-content:space-around;">
+                                        <a href="{% url 'final_bill' Prescription.prescription_id user.user_sr_no %}"> View </a>
+                                        <a href="{% url 'pdf_final_bill' Prescription.prescription_id %}"><img src = "{% static 'images/download.png' %}" style="width:24px;"></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No Prescriptions found for this user.</p>
+                {% endif %}
+            </div>
+        </main>
+</body>
+</html>

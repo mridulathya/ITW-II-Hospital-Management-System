@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - {{user.first_name}} {{user.last_name}}</title>
+    <link rel="stylesheet" href="{% static 'css/add_patient.css' %}">
+    
+    <style>
+        .dashboard-container {
+            display: flex;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 16%;
+            padding: 20px;
+            background-color: #f8f9fa;
+            left:0;
+            position: fixed;
+            height: 100vh;
+            top: 0;
+            overflow-y: auto;
+        }
+        .main-content {
+            width: 70%;
+            margin-left: 15%;
+            margin-right: 15%;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .rightsidebar {
+            width: 15%;
+            padding: 20px;
+            background-color: #2e3b4e;
+            color: #fff;
+            position: fixed;
+            right: 0;
+            height: 100vh;
+            top: 0;
+            overflow-y: auto;
+        }
+
+        .alert {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-weight: bold;
+            opacity: 0.95;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .alert-success { background-color: #d4edda; color: #155724; border-left: 5px solid #28a745; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border-left: 5px solid #dc3545; }
+        .alert-info { background-color: #d1ecf1; color: #0c5460; border-left: 5px solid #17a2b8; }
+
+        /* Tile styling */
+        .tiles-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .tile {
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            width: 180px;
+        }
+
+        .tile-icon { font-size: 40px; margin-bottom: 10px; }
+        .tile-title { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+        .tile-value { font-size: 24px; color: #333; }
+
+        .web-design { background-color: #FF7043; color: white; }
+        .web-development { background-color: #AB47BC; color: white; }
+        .responsive-design { background-color: #29B6F6; color: white; }
+        .brand-building { background-color: #66BB6A; color: white; }
+        .scheduled { background-color: #4f91f3; color: white; }
+        .pending_all { background-color: #c0f56b; color: white; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <div class="profile">
+                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                <p>{{ user.email_id }}</p>
+                <a href="{% url 'logout' %}"><button class="logout-btn">Log out</button></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li class="app_head">Appointments</li>
+                    <ul class="sub_appointments">
+                        <li><a href="{% url 'show_appointments' user.user_sr_no 'Waiting to be Scheduled' %}" class="button">Pending</a></li>
+                        <li><a href="{% url 'show_appointments' user.user_sr_no 'Scheduled' %}" class="button">Scheduled</a></li>
+                        <li><a href="{% url 'show_appointments' user.user_sr_no 'Cancelled' %}" class="button">Cancelled</a></li>
+                        <li><a href="{% url 'show_appointments' user.user_sr_no 'Completed' %}" class="button">Completed</a></li>
+                    </ul>
+                    <li><a href="{% url 'alldoctor' user.user_sr_no %}">All Doctors</a></li>
+                    <li><a href="{% url 'add_patient' user.user_sr_no %}">Add Patient</a></li>
+                    <li><a href="{% url 'settings' user.user_sr_no %}">Settings</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <h1>Receptionist Dashboard</h1>
+            <div class="tiles-container">
+                <div class="tile web-design">
+                    <div class="tile-icon">🌐</div>
+                    <div class="tile-title">Total Appointments</div>
+                    <div class="tile-value">{{ total_appointments }}</div>
+                </div>
+                
+                <div class="tile web-development">
+                    <div class="tile-icon">🕒</div>
+                    <div class="tile-title">Pending Today</div>
+                    <div class="tile-value">{{ total_pending_today }}</div>
+                </div> 
+    
+                <div class="tile scheduled">
+                    <div class="tile-icon">📆</div>
+                    <div class="tile-title">Scheduled</div>
+                    <div class="tile-value">{{ total_scheduled }}</div>
+                </div>
+                <div class="tile pending_all">
+                    <div class="tile-icon">📆</div>
+                    <div class="tile-title">Waiting to be Scheduled</div>
+                    <div class="tile-value">{{ total_pending_all }}</div>
+                </div>
+                <div class="tile responsive-design">
+                    <div class="tile-icon">📅</div>
+                    <div class="tile-title">Pending Tomorrow</div>
+                    <div class="tile-value">{{ total_pending_tomorrow }}</div>
+                </div>
+            
+                <div class="tile brand-building">
+                    <div class="tile-icon">✅</div>
+                    <div class="tile-title">Completed</div>
+                    <div class="tile-value">{{ total_completed }}</div>
+                </div>
+            </div>
+            <!-- Add main content here -->
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="rightsidebar">
+            <div class="profile">
+                <!-- Content for the right sidebar -->
+                <nav>
+                    <ul>
+                        <li class="app_head">Admin Access</li>
+                        <ul class="sub_appointments">
+                            <li><a href="{% url 'add_doctor' user.user_sr_no %}" class="button">Add Doctor</a></li>
+                            <li><a href="{% url 'add_receptionist' user.user_sr_no %}" class="button">Add Receptionist</a></li>
+                        </ul>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+    </div>
+    
+</body>
+</html>

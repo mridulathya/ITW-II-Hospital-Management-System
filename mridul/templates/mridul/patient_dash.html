@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <!-- <link rel="stylesheet" href="{% static 'css/patient_dash.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/alldoctor.css' %}">
+    <link rel="stylesheet" href="{% static 'css/add_patient.css' %}">
+</head>
+<body>
+        <aside class="sidebar">
+            <div class="profile">
+                <!-- <img src="user-placeholder.png" alt="Profile Image" class="profile-img"> -->
+                <h2>{{user.first_name}} {{user.last_name}}</h2>
+                <p>{{user.email_id}}</p>
+                <a href="{% url 'logout' %}"><button class="logout-btn">Log out</button></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'alldoctor' user.user_sr_no %}">All Doctors</a></li>
+                    <li><a href="{% url 'all_bookings' user.user_sr_no %}">My Bookings</a></li>
+                    <li><a href="{% url 'my_prescriptions' user.user_sr_no %}">My Prescriptions</a></li>
+                    <li><a href="{% url 'rate_app' user.user_sr_no %}">Rate Completed Appointments</a></li>
+                    <li><a href="{% url 'settings' user.user_sr_no %}">Settings</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            {% if messages and cancelled == 'cancelled' %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="header">
+                <h1>Welcome! <br> <span>{{user.first_name}} {{user.last_name}}</span></h1>
+                <p>Haven't any idea about doctors? no problem let's jump to "All Doctors" section or "Sessions"</p>
+                
+                <div>
+                    {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <form action="{% url 'patient_dashboard' user.user_sr_no %}" method="post">
+                        {% csrf_token %}
+                        {{ form.specialisation.label_tag }}
+                        {{ form.specialisation }}
+                        <button type="submit">Search</button> 
+                    </form>
+                </div>
+                
+                <section>
+                <!-- Doctor grid -->
+                <div class="doctor-grid">
+                    {% for doctor in page_obj %}
+                        <div class="doctor-card fade-in" style="display:flex; align-items:end;justify-content:space-around;">
+                            <div >
+                                <h2>{{ doctor.first_name }} {{ doctor.last_name }}</h2>
+                                <p>{{doctor.education}}</p>
+                                <p>Specialization: {{ doctor.specialization }}</p>
+                                <p>Consultation Fee: ${{ doctor.consultation_fee }}</p>
+                                <p>Experience: {{ doctor.experience }} years</p>
+                                <p>Rating: <span class="rating">{{ doctor.rating }} &#9733;</span></p>
+                            </div>
+                            <div>
+                                <a href="{% url 'book_appointment' user_id doctor.doctor_id %}"> 
+                                    <img src="{% static '/images/appointment.png' %}" style="width: 36px;">
+                                </a>
+                            </div>
+                        </div>
+                    
+                    {% endfor %}
+                </div>
+                <!-- Pagination controls -->
+                <div class="pagination-footer">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}{% if specialisation %}&specialisation={{ specialisation }}{% endif %}" class="pagination-link">Previous</a>
+                    {% endif %}
+                
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <span class="pagination-current">{{ num }}</span>  <!-- Current page highlighted -->
+                        {% else %}
+                            <a href="?page={{ num }}{% if specialisation %}&specialisation={{ specialisation }}{% endif %}" class="pagination-link">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+                
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}{% if specialisation %}&specialisation={{ specialisation }}{% endif %}" class="pagination-link">Next</a>
+                    {% endif %}
+                </div>
+            </section>
+            <h2>Your Upcoming Booking</h2>
+            
+            <div class="upcoming-booking">
+                {% if all_appointments %}
+                    <div id="scroll-container">
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th>Appointment ID</th>
+                                    <th>Doctor Name</th>
+                                    <th>Appointment Date</th>
+                                    <th>Appointment Time</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Remark</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointmentTable">
+                                {% for appointment in all_appointments %}
+                                    <tr>
+                                        <td>{{ appointment.appointment_id }}</td>
+                                        <td>{{ appointment.doctor_id.first_name }} {{ appointment.doctor_id.last_name }}</td>
+                                        <td>{{ appointment.appointment_date }}</td>
+                                        <td>{{ appointment.appointment_time }}</td>
+                                        <td>{{ appointment.reason }}</td>
+                                        <td>{{ appointment.status }}</td>
+                                        <td>{{ appointment.remark }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p>No appointments found for this user.</p>
+                {% endif %}
+            </div>
+        </main>
+       
+        
+</body>
+</html>

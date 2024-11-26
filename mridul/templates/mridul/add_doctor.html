@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Registration</title>
+    <link rel="stylesheet" href="{% static 'css/add_patient.css' %}">
+    <style>
+        .main-content {
+            display:flex;
+            justify-content: space-between;
+        }
+        .form-container {
+            max-width: 60%;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Right sidebar styling */
+        .rightsidebar {
+            right:0;
+            width: 18%;
+            background-color: #2e3b4e;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+        }
+        .alert {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 15px 0;
+        font-weight: bold;
+        opacity: 0.95;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    /* Success Message */
+    .alert-success {
+        background-color: #d4edda; /* Light green background */
+        color: #155724; /* Dark green text */
+        border-left: 5px solid #28a745; /* Accent border */
+    }
+
+    /* Error Message */
+    .alert-error {
+        background-color: #f8d7da; /* Light red background */
+        color: #721c24; /* Dark red text */
+        border-left: 5px solid #dc3545; /* Accent border */
+    }
+
+    /* Info Message */
+    .alert-info {
+        background-color: #d1ecf1; /* Light blue background */
+        color: #0c5460; /* Dark blue text */
+        border-left: 5px solid #17a2b8; /* Accent border */
+    }
+
+    /* Dismiss button for alerts */
+    .alert .close {
+        margin-left: auto;
+        color: inherit;
+        font-size: 16px;
+        cursor: pointer;
+        background: none;
+        border: none;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="form-container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <h1>Doctor Registration</h1>
+            <form action="{% url 'add_doctor' user.user_sr_no %}" method="POST">
+                {% csrf_token %}
+                <!-- Doctor ID is auto-incremented, so no need to include it in the form -->
+                
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="education">Education</label>
+                    <input type="text" id="education" name="education" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="specialization">Specialization</label>
+                    <input type="text" id="specialization" name="specialization" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone_no">Phone Number</label>
+                    <input type="text" id="phone_no" name="phone_no" maxlength="10" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="consultation_fee">Consultation Fee</label>
+                    <input type="number" id="consultation_fee" name="consultation_fee" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label for="time_slot_begin">Time Slot Begin</label>
+                    <input type="time" id="time_slot_begin" name="time_slot_begin" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="time_slot_end">Time Slot End</label>
+                    <input type="time" id="time_slot_end" name="time_slot_end" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="experience">Experience (in years)</label>
+                    <input type="number" id="experience" name="experience" min="0">
+                </div>
+                <div class="form-group" style="background-color: rgb(243, 130, 130);">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <div class="form-group" style="background-color: rgb(243, 130, 130);">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+                </div>
+
+                <button type="submit" class="submit-btn">Register</button>
+            </form>
+        </div>
+        <aside class="rightsidebar">
+            <div class="profile">
+                <!-- Content for the right sidebar -->
+                <nav>
+                    <ul>
+                        <li class="app_head">Admin Access</li>
+                        <ul class="sub_appointments">
+                            <li><a href="#" class="button">Add Doctor</a></li>
+                            <li><a href="{% url 'show_appointments' user.user_sr_no 'Cancelled' %}" class="button">Add Receptionist</a></li>
+                        </ul>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+    </div>
+    
+</body>
+</html>

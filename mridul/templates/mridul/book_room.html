@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - {{user.first_name}} {{user.last_name}}</title>
+    <link rel="stylesheet" href="{% static 'css/add_patient.css' %}">
+    <link rel="stylesheet" href="{% static 'css/appointmen.css' %}">
+    
+    <style>
+        .dashboard-container {
+            display: flex;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 16%;
+            padding: 20px;
+            background-color: #f8f9fa;
+            left:0;
+            position: fixed;
+            height: 100vh;
+            top: 0;
+            overflow-y: auto;
+        }
+        .main-content {
+            width: 70%;
+            margin-left: 15%;
+            margin-right: 15%;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .rightsidebar {
+            width: 15%;
+            padding: 20px;
+            background-color: #2e3b4e;
+            color: #fff;
+            position: fixed;
+            right: 0;
+            height: 100vh;
+            top: 0;
+            overflow-y: auto;
+        }
+
+        .alert {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-weight: bold;
+            opacity: 0.95;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .alert-success { background-color: #d4edda; color: #155724; border-left: 5px solid #28a745; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border-left: 5px solid #dc3545; }
+        .alert-info { background-color: #d1ecf1; color: #0c5460; border-left: 5px solid #17a2b8; }
+
+        /* Tile styling */
+        .tiles-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .tile {
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            width: 180px;
+        }
+
+        .tile-icon { font-size: 40px; margin-bottom: 10px; }
+        .tile-title { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+        .tile-value { font-size: 24px; color: #333; }
+
+        .web-design { background-color: #FF7043; color: white; }
+        .web-development { background-color: #AB47BC; color: white; }
+        .responsive-design { background-color: #29B6F6; color: white; }
+        .brand-building { background-color: #66BB6A; color: white; }
+        .scheduled { background-color: #4f91f3; color: white; }
+        .pending_all { background-color: #c0f56b; color: white; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <div class="profile">
+                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                <p>{{ user.email_id }}</p>
+                <a href="{% url 'logout' %}"><button class="logout-btn">Log out</button></a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li class="app_head">Appointments</li>
+                    <ul class="sub_appointments">
+                        <li><a href="{% url 'show_appointments' user.user_sr_no 'Waiting to be Scheduled' %}" class="button">Pending</a></li>
+                        <li><a href="{% url 'show_appointments' user.user_sr_no 'Scheduled' %}" class="button">Scheduled</a></li>
+                        <li><a href="{% url 'show_appointments' user.user_sr_no 'Cancelled' %}" class="button">Cancelled</a></li>
+                        <li><a href="{% url 'show_appointments' user.user_sr_no 'Completed' %}" class="button">Completed</a></li>
+                    </ul>
+                    <li><a href="{% url 'alldoctor' user.user_sr_no %}">All Doctors</a></li>
+                    <li><a href="{% url 'add_patient' user.user_sr_no %}">Add Patient</a></li>
+                    <li><a href="{% url 'settings' user.user_sr_no %}">Settings</a></li>
+                </ul>
+            </nav>
+        </aside>    
+        
+        <main class="main-content">
+            <div class="container">
+                <h1>Book a Room</h1>
+                <form action="{% url 'book_room' user.user_sr_no %}" method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="room">Select Room</label>
+                        <select id="room" name="room" required>
+                            <option value="">-- Select a Room --</option>
+                            {% for room in rooms %}
+                                <option value="{{ room.room_id }}" {% if room.status == 'Occupied' %}disabled{% endif %}>
+                                    Room {{ room.room_number }} - {{ room.room_type }} ({{ room.status }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="daily_rate">Daily Rate</label>
+                        <textarea id="daily_rate" name="daily_rate" rows="1" placeholder="$ {{ room.daily_rate }}" readonly></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="admission_date">Admission Date</label>
+                        <input type="date" id="admission_date" name="admission_date" value="{{ request.POST.admission_date }}" required onchange="this.form.submit()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="discharge_date">Expected Discharge Date</label>
+                        <input type="date" id="discharge_date" name="discharge_date" value="{{ request.POST.discharge_date }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reason">Reason for Admission</label>
+                        <textarea id="reason" name="reason" rows="4" placeholder="Please describe the reason for your admission (optional)">{{ request.POST.reason }}</textarea>
+                    </div>
+                
+                    <button type="submit" class="btn">Book Room</button>
+                </form>
+            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const datePicker = document.getElementById("admission_date");
+        
+                    // Set min and max dates
+                    const today = new Date();
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(today.getDate() + 1);
+                    const maxDate = new Date(today);
+                    maxDate.setDate(today.getDate() + 30);
+        
+                    // Format dates as YYYY-MM-DD for input[type="date"]
+                    const formatDate = (date) => {
+                        let month = (date.getMonth() + 1).toString().padStart(2, '0');
+                        let day = date.getDate().toString().padStart(2, '0');
+                        return `${date.getFullYear()}-${month}-${day}`;
+                    };
+        
+                    // Set the min and max attributes
+                    datePicker.min = formatDate(tomorrow);
+                    datePicker.max = formatDate(maxDate);
+                });
+            </script>
+        </main>
+        
+</body>
+</html>

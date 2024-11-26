@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | HMS</title>
+    <link rel="stylesheet" href="{% static 'css/aboutus.css' %}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="fade-in">About Our Hospital Management System</h1>
+            <nav>
+                <ul class="slide-in">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'home' %}">Services</a></li>
+                    <li><a href="{% url 'home' %}">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="about">
+        <div class="container">
+            <h2 class="slide-in-left">Who We Are</h2>
+            <p class="fade-in-delay">
+                Welcome to the Hospital Management System (HMS), a comprehensive solution designed to streamline the 
+                operations of hospitals, clinics, and healthcare institutions. Our goal is to simplify the management 
+                of patient data, appointments, billing, and prescriptions, all in one easy-to-use platform.
+            </p>
+        </div>
+    </section>
+
+    <section class="mission">
+        <div class="container">
+            <h2 class="slide-in-right">Our Mission</h2>
+            <p class="fade-in-delay">
+                At HMS, we are committed to delivering top-notch healthcare solutions by leveraging cutting-edge technology. 
+                We believe in efficient, error-free operations that enhance patient care and make healthcare management more 
+                accessible to all.
+            </p>
+        </div>
+    </section>
+
+    <footer class="fade-in">
+        <div class="container">
+            <p>&copy; 2024 Hospital Management System. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

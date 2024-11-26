@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Doctors | HMS</title>
+    <link rel="stylesheet" href="{% static 'css/alldoctor.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        .pagination-footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .pagination-link, .pagination-current {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 8px 12px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .pagination-current {
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border-radius: 4px;
+        }
+
+        .pagination-link:hover {
+            background-color: #0056b3;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+    </style>
+</head>
+<body>
+    <main class="main-content">
+        <header>
+            <h1>Meet Our Doctors</h1>
+        </header>
+    
+        <section>
+            <!-- Display messages, if any -->
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <p class="message {{ message.tags }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+    
+            <!-- Doctor grid -->
+            <div class="doctor-grid">
+                {% for doctor in page_obj %}
+                    <div class="doctor-card fade-in" style="display:flex; align-items:end;justify-content:space-around;">
+                        <div >
+                            <h2>{{ doctor.first_name }} {{ doctor.last_name }}</h2>
+                            <p>{{doctor.education}}</p>
+                            <p>Specialization: {{ doctor.specialization }}</p>
+                            <p>Consultation Fee: ${{ doctor.consultation_fee }}</p>
+                            <p>Experience: {{ doctor.experience }} years</p>
+                            <p>Rating: <span class="rating">{{ doctor.rating }} &#9733;</span></p>
+                        </div>
+                        <div>
+                            <a href="{% url 'book_appointment' user_id doctor.doctor_id %}"> 
+                                <img src="{% static '/images/appointment.png' %}" style="width: 36px;">
+                            </a>
+                        </div>
+                    </div>
+                
+                {% endfor %}
+            </div>
+            <!-- Pagination controls -->
+            <div class="pagination-footer">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link">Previous</a>
+                {% endif %}
+    
+                <!-- Display page numbers from 1 to 5 (or max number of pages if fewer) -->
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num > 5 %}
+                    {% endif %}
+    
+                    {% if page_obj.number == num %}
+                        <span class="pagination-current">{{ num }}</span>  <!-- Current page highlighted -->
+                    {% else %}
+                        <a href="?page={{ num }}" class="pagination-link">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+    
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="pagination-link">Next</a>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+    
+</body>
+</html>

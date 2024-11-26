@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management System</title>
+    <link rel="stylesheet" href="{% static 'css/main._desktop.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="contact-info">
+            <span><i class="fas fa-envelope"></i> athyamridul@gmail.com</span>
+            <span><i class="fas fa-map-marker-alt"></i> C-706, Noida Sector 37</span>
+        </div>
+        <div class="call-now">
+            <span>Call Now: 2147483647</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        
+        <div class="logo">
+            <div>
+                <img src="{% static 'images/logo.png' %}" alt="Logo">
+            </div>
+            <div>HMS</div>
+        </div>
+        
+        <nav>
+            <ul>
+                <li><a href="{% url 'adminpage' %}">Admin</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'aboutus' %}">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div id="contact-popup" class="contact-popup">
+        <div class="contact-circle">
+            <a href="https://wa.me/your_whatsapp_number" target="_blank" title="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+        </div>
+        <div class="contact-circle">
+            <a href="https://www.instagram.com/your_instagram_username" target="_blank" title="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+        </div>
+        <div class="contact-circle">
+            <a href="mailto:support@hms.com" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your Most Trusted Health Partner</h1>
+            <p>TOTAL HEALTH CARE SOLUTION</p>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+        <div class="service-box">
+            <i class="fas fa-hospital"></i>
+            <h3>24 Hours Service</h3>
+            <p>Online Appointment</p>
+        </div>
+        <div class="service-box">
+            <i class="fas fa-clock"></i>
+            <h3>Timing Schedule</h3>
+            <p>Working Hours</p>
+            <ul class="ul-elements">
+                <li>Monday - Saturday</li>
+                <li>09:00 to 22:00 </li>
+                <li><strong>Sunday Closed</strong></li>
+            </ul>
+        </div>
+        <div class="service-box">
+            <i class="fas fa-phone"></i>
+            <h3>Emergency Cases</h3>
+            <p>1-800-700-6200</p>
+        </div>
+    </section>
+    <div class="contact-support">
+        <a href="mailto:athyamridul@gmail.com" title="Contact Support">
+            <i class="fas fa-envelope"></i>
+        </a>
+    </div>
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>Hospital Management System</h3>
+                <p>The Hospital Management System (HMS) is designed for Any Hospital to replace their existing manual, paper-based system...</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Link</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="{% url 'adminpage' %}">Admin</a></li>
+                    <li><a href="{% url 'login' %}">Doctor SignIn</a></li>
+                    <li><a href="{% url 'register' %}">Patient Signup</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Get in Touch</h4>
+                <p>info@gmail.com</p>
+                <p>2147483647</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+    document.getElementById("contact-btn").addEventListener("click", function(event) {
+        event.preventDefault(); // Prevents link from navigating
+        document.getElementById("contact-popup").classList.toggle("show");
+    });
+
+    // Close the pop-up if clicked outside of it
+    document.addEventListener("click", function(event) {
+        const contactPopup = document.getElementById("contact-popup");
+        const contactBtn = document.getElementById("contact-btn");
+
+        if (!contactPopup.contains(event.target) && event.target !== contactBtn) {
+            contactPopup.classList.remove("show");
+        }
+    });
+</script>
+</body>
+</html>
